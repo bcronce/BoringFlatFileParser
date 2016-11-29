@@ -9,6 +9,26 @@ namespace BFFP
 {
     public abstract class Parser : IDisposable
     {
+        public static string GetStringByOrdinal(DataRow record, int ordinal)
+        {
+            var field = record.Fields[ordinal];
+
+            if (field.Length == 0)
+                return string.Empty;
+            else
+                return new string(record.Buffer, field.Offset, field.Length);
+        }
+
+        public static string GetStringByName(DataRow record, string name)
+        {
+            int fieldOrdinal;
+
+            if (record.NameLookup.TryGetValue(name, out fieldOrdinal))
+                return GetStringByOrdinal(record, fieldOrdinal);
+
+            throw new KeyNotFoundException($"'{name}' is not a valid field name");
+        }
+
         public Task<bool> Read(DataRow reuse, CancellationToken cancellationToken)
         {
             if (reuse.Buffer == null)
