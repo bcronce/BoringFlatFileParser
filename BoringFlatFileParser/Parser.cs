@@ -31,7 +31,7 @@ namespace BFFP
                 throw new InvalidOperationException($"Cannot call {nameof(GetRecord)} without {nameof(Read)} returning true");
 
             //Reset once consumed
-            this.Record = new DataRow(null, null);
+            this.Record = new DataRow(null, null, null);
 
             return tmpRecord;
         }
