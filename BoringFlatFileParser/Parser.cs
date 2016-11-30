@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
 
 namespace BFFP
 {
     public abstract class Parser : IDisposable
     {
+        private bool LeaveOpen;
+        protected StreamReader Stream;
+
         private DataRow SetRecord;
         private bool IsRecordSet = false;
         protected DataRow Record {
@@ -70,9 +74,16 @@ namespace BFFP
         public DataRow GetRecord()
         {
             return this.Record;
+        }
 
+        public Parser(StreamReader input)
+            : this(input, true)
+        { }
 
-
+        protected Parser(StreamReader input, bool leaveOpen)
+        {
+            this.LeaveOpen = leaveOpen;
+            this.Stream = input;
         }
 
         #region IDisposable Support
