@@ -9,6 +9,31 @@ namespace BFFP
 {
     public abstract class Parser : IDisposable
     {
+        private DataRow SetRecord;
+        private bool IsRecordSet = false;
+        protected DataRow Record {
+            set
+            {
+                if (value.Buffer == null)
+                    throw new InvalidOperationException($"{nameof(value.Buffer)} may not be null");
+
+                if (value.Fields == null)
+                    throw new InvalidOperationException($"{nameof(value.Fields)} may not be null");
+
+                IsRecordSet = true;
+
+                this.SetRecord = value;
+            }
+            private get
+            {
+                //Throw a tantrum if the datarow is not set
+                if (!IsRecordSet)
+                    throw new InvalidOperationException($"DataRow cannot be acquired until it has been read");
+
+                return SetRecord;
+            }
+        }
+
         public static string GetStringByOrdinal(DataRow record, int ordinal)
         {
             var field = record.Fields[ordinal];
@@ -44,16 +69,10 @@ namespace BFFP
 
         public DataRow GetRecord()
         {
-            var tmpRecord = this.Record;
+            return this.Record;
 
-            //Throw a tantrum if the record is not set
-            if (tmpRecord.Fields == null)
-                throw new InvalidOperationException($"Cannot call {nameof(GetRecord)} without {nameof(Read)} returning true");
 
-            //Reset once consumed
-            this.Record = new DataRow(null, null, null);
 
-            return tmpRecord;
         }
 
         #region IDisposable Support
