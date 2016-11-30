@@ -91,17 +91,21 @@ namespace BFFP
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            try
             {
-                if (disposing)
+                // Note that Stream.Close() can potentially throw here. So we need to
+                // ensure cleaning up internal resources, inside the finally block.
+                if (!LeaveOpen && disposing && (this.Stream != null))
                 {
-                    // TODO: dispose managed state (managed objects).
+                    this.Stream.Dispose();
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
-                disposedValue = true;
+            }
+            finally
+            {
+                if (!LeaveOpen && (this.Stream != null))
+                {
+                    this.Stream = null;
+                }
             }
         }
 
