@@ -47,6 +47,7 @@ namespace BFFP
             }
         }
 
+        #region Public Methods
         public static string GetStringByOrdinal(DataRow record, int ordinal)
         {
             var field = record.Fields[ordinal];
@@ -77,8 +78,11 @@ namespace BFFP
 
             return this.InternalRead(reuse, cancellationToken);
         }
+        #endregion
 
+        #region Protected Methods
         protected abstract Task<bool> InternalRead(DataRow reuse, CancellationToken cancellationToken);
+        #endregion
 
         public DataRow GetRecord()
         {
