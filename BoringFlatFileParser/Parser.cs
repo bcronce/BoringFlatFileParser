@@ -10,6 +10,15 @@ namespace BFFP
 {
     public abstract class Parser : IDisposable
     {
+        public enum Trim
+        {
+            NoTrim,
+            LeftTrim,
+            RightTrim,
+            LeftAndRightTrim
+        }
+
+        private Trim TrimType;
         private bool LeaveOpen;
         protected StreamReader Stream;
 
@@ -77,13 +86,18 @@ namespace BFFP
         }
 
         public Parser(StreamReader input)
-            : this(input, true)
+            : this(input, Trim.NoTrim, true)
         { }
 
-        protected Parser(StreamReader input, bool leaveOpen)
+        public Parser(StreamReader input, Trim trimType)
+            : this(input, trimType, true)
+        { }
+
+        protected Parser(StreamReader input, Trim trimType, bool leaveOpen)
         {
             this.LeaveOpen = leaveOpen;
             this.Stream = input;
+            this.TrimType = trimType;
         }
 
         #region IDisposable Support
