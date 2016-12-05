@@ -76,6 +76,8 @@ namespace BFFP
             if (reuse.Fields == null)
                 throw new ArgumentException($"{nameof(reuse.Fields)} may not be null", nameof(reuse));
 
+            reuse.Fields.Clear();
+
             return this.InternalRead(reuse, cancellationToken);
         }
         #endregion
