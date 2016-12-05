@@ -21,6 +21,7 @@ namespace BFFP
         private Trim TrimType;
         private bool LeaveOpen;
         protected StreamReader Stream;
+        private bool ClearRowBuffer;
 
         private DataRow SetRecord;
         private bool IsRecordSet = false;
@@ -78,6 +79,9 @@ namespace BFFP
 
             reuse.Fields.Clear();
 
+            if (this.ClearRowBuffer)
+                Array.Clear(reuse.Buffer, 0, reuse.Buffer.Length);
+
             return this.InternalRead(reuse, cancellationToken);
         }
         #endregion
@@ -92,18 +96,23 @@ namespace BFFP
         }
 
         public Parser(StreamReader input)
-            : this(input, Trim.NoTrim, true)
+            : this(input, Trim.NoTrim, false)
         { }
 
         public Parser(StreamReader input, Trim trimType)
-            : this(input, trimType, true)
+            : this(input, trimType, false)
         { }
 
-        protected Parser(StreamReader input, Trim trimType, bool leaveOpen)
+        public Parser(StreamReader input, Trim trimType, bool clearRowBufferOnRead)
+            : this(input, trimType, clearRowBufferOnRead, true)
+        { }
+
+        protected Parser(StreamReader input, Trim trimType, bool clearRowBufferOnRead, bool leaveOpen)
         {
             this.LeaveOpen = leaveOpen;
             this.Stream = input;
             this.TrimType = trimType;
+            this.ClearRowBuffer = clearRowBufferOnRead;
         }
 
         #region IDisposable Support
